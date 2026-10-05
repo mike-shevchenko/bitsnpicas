@@ -44,6 +44,16 @@ public class BitmapExportPanel extends JPanel implements BitmapExportOptions {
 	private final JButton exportButton;
 	
 	public BitmapExportPanel(BitmapFont font) {
+		this(font, null);
+	}
+	
+	public BitmapExportPanel(BitmapFont font, String encodingName) {
+		// The encoding that the font is viewed in, if it is viewed in one.
+		final GlyphList viewedEncoding = (
+			(encodingName == null) ? null :
+			EncodingList.instance().getGlyphList(encodingName)
+		);
+		
 		this.font = font;
 		this.format = new JComboBox(BitmapExportFormat.values());
 		this.ttfPanel = new BitmapExportTTFPanel();
@@ -110,7 +120,7 @@ public class BitmapExportPanel extends JPanel implements BitmapExportOptions {
 				amigaPanel.setSelectedEncoding(enc);
 				encodingPanel.setSelectedEncoding(enc);
 				u8mPanel.setSelectedEncoding(enc);
-				fntPanel.setSelectedEncoding(enc);
+				fntPanel.setSelectedEncoding((viewedEncoding != null) ? viewedEncoding : enc);
 				Window c = getMyContainingWindow();
 				if (c != null) c.pack();
 			}
