@@ -137,7 +137,7 @@ A Windows `.fon` file holds one or more `.fnt` fonts. To change such a file, spl
 
 `java -jar BitsNPicas.jar mergefon myfonts.fon.files`
 
-The first command makes the directory `myfonts.fon.files` with each font as a `.fnt` file, a copy of its bytes, and with a text file, `fon.txt`, of what else the `.fon` file tells: its version strings, module name and description, one to a line as `name=value`, in UTF-8. The second command makes `myfonts.fon` of every `.fnt` file of the directory, sorted by height, weight and slant, and of `fon.txt` if it is there.
+The first command makes the directory `myfonts.fon.files` with each font as a `.fnt` file, a copy of its bytes, and with a text file, `fon.txt`, of what else the `.fon` file tells: its version strings, module name and description, one to a line as `name=value`, in UTF-8. The second command makes `myfonts.fon` of every `.fnt` file of the directory, sorted by height, weight and slant, and of `fon.txt` if it is there. Both are also in the File menu of the editor, under Windows FON.
 
 `splitfon` does not write into a directory that exists; with `-f` it replaces the directory, deleting every file in it.
 
