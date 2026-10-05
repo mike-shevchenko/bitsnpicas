@@ -160,6 +160,8 @@ public class FNTBitmapFontExporter implements BitmapFontExporter {
 			bitmaps.put(idx, data);
 		}
 		
+		if (numChars == 0) throw new IOException("no characters in the selected encoding");
+		
 		// Create notdef bitmap.
 		avgWidth /= numChars;
 		if (avgWidth < 1) avgWidth = 1;
@@ -193,9 +195,11 @@ public class FNTBitmapFontExporter implements BitmapFontExporter {
 			}
 		}
 		
+		// The default and break characters must be among those of the font.
+		if (breakChar < 0) breakChar = firstChar;
+		if (defaultChar < 0) defaultChar = breakChar;
+		
 		// Add absolute space bitmap.
-		if (breakChar < 0) breakChar = lastChar + 1;
-		if (defaultChar < 0) defaultChar = lastChar + 1;
 		widthBytes += rowBytes;
 		numChars++;
 		widths.put(lastChar + 1, avgWidth);
