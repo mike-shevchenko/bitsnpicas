@@ -125,6 +125,11 @@ public enum BitmapExportFormat {
 			return new FNTBitmapFontExporter(2, o.getSelectedEncoding(), o.getFNTAverageWidth());
 		}
 	},
+	FON("FON (Windows 3.x)", ".fon", "fnt", "CP1252") {
+		public BitmapFontExporter createExporter(BitmapExportOptions o) {
+			return new FONBitmapFontExporter(o.getSelectedEncoding(), o.getFNTAverageWidth());
+		}
+	},
 	FONTX("FONTX (DOS/V)", ".fnt", "fontx") {
 		public BitmapFontExporter createExporter(BitmapExportOptions o) {
 			if (o.getFONTXDoubleByte()) {

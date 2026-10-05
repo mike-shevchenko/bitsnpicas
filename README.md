@@ -109,6 +109,7 @@ The output format is determined by the `-f` option. Supported output formats inc
   *  `font` or `amiga` - Amiga bitmap font (black and white only; color not supported)
   *  `fnt` or `fnt3` - Windows 3.x `.fnt` format (not the same as `.fon`)
   *  `fnt2` - Windows 2.x `.fnt` format (also not the same as `.fon`)
+  *  `fon` - Windows `.fon` format, a file of one font
   *  `fontx2`, `fontx`, or `dosv` - [IBM DOS/V FONTX2 format](http://elm-chan.org/docs/dosv/fontx_e.html)
   *  `mgtk`, `mgf`, `mpf`, or `mousepaint` - MousePaint/MouseGraphics ToolKit font
   *  `rb12` - [Rockbox Font Format](https://www.rockbox.org/wiki/FontFormat) for Rockbox 2.3 or above
