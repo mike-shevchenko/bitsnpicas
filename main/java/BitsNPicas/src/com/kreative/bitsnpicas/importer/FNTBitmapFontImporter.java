@@ -63,11 +63,11 @@ public class FNTBitmapFontImporter implements BitmapFontImporter {
 		int type = Short.reverseBytes(in.readShort()) & 0xFFFF;
 		if ((type & 1) != 0) throw new IOException("vector fonts are not supported");
 		
-		int points = Short.reverseBytes(in.readShort()) & 0xFFFF;
+		in.readShort(); // int points = Short.reverseBytes(in.readShort()) & 0xFFFF;
 		in.readShort(); // int vertRes = Short.reverseBytes(in.readShort()) & 0xFFFF;
 		in.readShort(); // int horizRes = Short.reverseBytes(in.readShort()) & 0xFFFF;
 		int ascent = Short.reverseBytes(in.readShort()) & 0xFFFF;
-		in.readShort(); // int internalLeading = Short.reverseBytes(in.readShort()) & 0xFFFF;
+		int internalLeading = Short.reverseBytes(in.readShort()) & 0xFFFF;
 		int externalLeading = Short.reverseBytes(in.readShort()) & 0xFFFF;
 		int italic = in.readUnsignedByte();
 		int underline = in.readUnsignedByte();
@@ -136,9 +136,11 @@ public class FNTBitmapFontImporter implements BitmapFontImporter {
 			}
 		}
 		
+		// The em is the character cell without the internal leading.
+		// (The point size is in points, not in pixels.)
 		int descent = pixHeight - ascent;
-		int emAscent = points * ascent / pixHeight;
-		int emDescent = points - emAscent;
+		int emAscent = Math.max(ascent - internalLeading, 0);
+		int emDescent = descent;
 		String styleName = styleName(italic, underline, strikeOut, weight);
 		BitmapFont f = new BitmapFont(emAscent, emDescent, ascent, descent, 0, 0, externalLeading, pixWidth);
 		f.setName(BitmapFont.NAME_COPYRIGHT, copyright);
