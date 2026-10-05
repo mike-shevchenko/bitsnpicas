@@ -100,6 +100,7 @@ The output format is determined by the `-f` option. Supported output formats inc
   *  `nfnt` - Mac OS Classic font resource (in the data fork)
   *  `png` or `sfont` - SDL SFont
   *  `rfont` - RFont, Kreative Software's extension of SFont
+  *  `pxfont` - font sheet of [pxfont](https://github.com/mike-shevchenko/retro-tools)
   *  `hex` - [GNU Unifont](http://unifoundry.com/unifont/index.html) hex format
   *  `cvt` or `geos` - GEOS font in Convert format (with MEGA option)
   *  `fzx` - [FZX by Andrew Owen (for ZX Spectrum)](https://faqwiki.zxnet.co.uk/wiki/FZX_format)
