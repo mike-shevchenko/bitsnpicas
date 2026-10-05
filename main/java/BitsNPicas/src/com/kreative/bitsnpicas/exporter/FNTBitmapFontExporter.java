@@ -139,6 +139,7 @@ public class FNTBitmapFontExporter implements BitmapFontExporter {
 			avgWidth += width;
 			numChars++;
 			if (ch == 32) breakChar = idx;
+			if (idx == 0x7F) defaultChar = idx; // by convention of Windows fonts
 			if (firstChar < 0) firstChar = idx;
 			lastChar = idx;
 			int rowBytes = (width + 7) / 8;
