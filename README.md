@@ -126,6 +126,18 @@ Additional options include:
 
 You can see a list of all options using the `--help` option.
 
+## Splitting and Merging Windows FON Files
+
+A Windows `.fon` file holds one or more `.fnt` fonts. To change such a file, split it into its fonts, change those, and merge them again:
+
+`java -jar BitsNPicas.jar splitfon myfonts.fon`
+
+`java -jar BitsNPicas.jar mergefon myfonts.fon.files`
+
+The first command makes the directory `myfonts.fon.files` with each font as a `.fnt` file, a copy of its bytes, and with a text file, `fon.txt`, of what else the `.fon` file tells: its version strings, module name and description, one to a line as `name=value`, in UTF-8. The second command makes `myfonts.fon` of every `.fnt` file of the directory, sorted by height, weight and slant, and of `fon.txt` if it is there.
+
+`splitfon` does not write into a directory that exists; with `-f` it replaces the directory, deleting every file in it.
+
 ## Extracting Images from Emoji/Color Fonts
 
 ### Example using Apple's `sbix` format
