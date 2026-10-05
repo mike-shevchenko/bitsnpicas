@@ -13,6 +13,17 @@ import com.kreative.unicode.data.EncodingList;
 import com.kreative.unicode.data.GlyphList;
 
 public class FNTBitmapFontImporter implements BitmapFontImporter {
+	// Header fields that a font has no place for are kept as its properties.
+	// The default and break characters are kept as their codes in the font.
+	public static final String PROP_CHARSET = "fnt.charSet";
+	public static final String PROP_VERT_RES = "fnt.vertRes";
+	public static final String PROP_HORIZ_RES = "fnt.horizRes";
+	public static final String PROP_FAMILY = "fnt.family";
+	public static final String PROP_AVG_WIDTH = "fnt.avgWidth";
+	public static final String PROP_DEFAULT_CHAR = "fnt.defaultChar";
+	public static final String PROP_BREAK_CHAR = "fnt.breakChar";
+	public static final String[] FAMILIES = { "DontCare", "Roman", "Swiss", "Modern", "Script", "Decorative" };
+	
 	private GlyphList encoding;
 	
 	public FNTBitmapFontImporter() {
@@ -65,8 +76,8 @@ public class FNTBitmapFontImporter implements BitmapFontImporter {
 		if ((type & 1) != 0) throw new IOException("vector fonts are not supported");
 		
 		in.readShort(); // int points = Short.reverseBytes(in.readShort()) & 0xFFFF;
-		in.readShort(); // int vertRes = Short.reverseBytes(in.readShort()) & 0xFFFF;
-		in.readShort(); // int horizRes = Short.reverseBytes(in.readShort()) & 0xFFFF;
+		int vertRes = Short.reverseBytes(in.readShort()) & 0xFFFF;
+		int horizRes = Short.reverseBytes(in.readShort()) & 0xFFFF;
 		int ascent = Short.reverseBytes(in.readShort()) & 0xFFFF;
 		int internalLeading = Short.reverseBytes(in.readShort()) & 0xFFFF;
 		int externalLeading = Short.reverseBytes(in.readShort()) & 0xFFFF;
@@ -77,13 +88,13 @@ public class FNTBitmapFontImporter implements BitmapFontImporter {
 		int charSet = in.readUnsignedByte();
 		int pixWidth = Short.reverseBytes(in.readShort()) & 0xFFFF;
 		int pixHeight = Short.reverseBytes(in.readShort()) & 0xFFFF;
-		in.readByte(); // int pitchAndFamily = in.readUnsignedByte();
-		in.readShort(); // int avgWidth = Short.reverseBytes(in.readShort()) & 0xFFFF;
+		int pitchAndFamily = in.readUnsignedByte();
+		int avgWidth = Short.reverseBytes(in.readShort()) & 0xFFFF;
 		in.readShort(); // int maxWidth = Short.reverseBytes(in.readShort()) & 0xFFFF;
 		int firstChar = in.readUnsignedByte();
 		int lastChar = in.readUnsignedByte();
 		int defaultChar = in.readUnsignedByte();
-		in.readByte(); // int breakChar = in.readUnsignedByte();
+		int breakChar = in.readUnsignedByte();
 		in.readShort(); // int widthBytes = Short.reverseBytes(in.readShort()) & 0xFFFF;
 		in.readInt(); // int device = Integer.reverseBytes(in.readInt());
 		int face = Integer.reverseBytes(in.readInt());
@@ -154,6 +165,15 @@ public class FNTBitmapFontImporter implements BitmapFontImporter {
 		f.setName(BitmapFont.NAME_FAMILY, faceName);
 		f.setName(BitmapFont.NAME_STYLE, styleName);
 		f.setName(BitmapFont.NAME_FAMILY_AND_STYLE, faceName + " " + styleName);
+		
+		int family = pitchAndFamily >> 4;
+		f.setProperty(PROP_CHARSET, Integer.toString(charSet));
+		f.setProperty(PROP_VERT_RES, Integer.toString(vertRes));
+		f.setProperty(PROP_HORIZ_RES, Integer.toString(horizRes));
+		f.setProperty(PROP_FAMILY, (family < FAMILIES.length) ? FAMILIES[family] : Integer.toString(family));
+		f.setProperty(PROP_AVG_WIDTH, Integer.toString(avgWidth));
+		f.setProperty(PROP_DEFAULT_CHAR, Integer.toString(firstChar + defaultChar));
+		f.setProperty(PROP_BREAK_CHAR, Integer.toString(firstChar + breakChar));
 		
 		for (int i = 0; i < n-1; i++) {
 			byte[][] bitmap = new byte[geHeight[i]][geWidth[i]];

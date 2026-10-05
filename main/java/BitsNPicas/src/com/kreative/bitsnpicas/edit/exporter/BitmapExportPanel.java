@@ -21,6 +21,7 @@ import com.kreative.bitsnpicas.BitmapFontExporter;
 import com.kreative.bitsnpicas.IDGenerator;
 import com.kreative.bitsnpicas.PointSizeGenerator;
 import com.kreative.bitsnpicas.edit.Main;
+import com.kreative.bitsnpicas.importer.FNTBitmapFontImporter;
 import com.kreative.unicode.data.EncodingList;
 import com.kreative.unicode.data.GlyphList;
 
@@ -48,7 +49,17 @@ public class BitmapExportPanel extends JPanel implements BitmapExportOptions {
 	}
 	
 	public BitmapExportPanel(BitmapFont font, String encodingName) {
-		// The encoding that the font is viewed in, if it is viewed in one.
+		// The encoding that the font is viewed in, if it is viewed in one,
+		// or else the one that a font imported from FNT came in.
+		if (encodingName == null || !EncodingList.instance().containsGlyphList(encodingName)) {
+			encodingName = null;
+			try {
+				String cs = font.getProperty(FNTBitmapFontImporter.PROP_CHARSET);
+				if (cs != null) encodingName = FNTBitmapFontImporter.getEncodingName(Integer.parseInt(cs.trim()));
+			} catch (NumberFormatException e) {
+				// No character set told.
+			}
+		}
 		final GlyphList viewedEncoding = (
 			(encodingName == null) ? null :
 			EncodingList.instance().getGlyphList(encodingName)
