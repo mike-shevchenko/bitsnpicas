@@ -81,7 +81,7 @@ public class FNTBitmapFontImporter implements BitmapFontImporter {
 		in.readShort(); // int maxWidth = Short.reverseBytes(in.readShort()) & 0xFFFF;
 		int firstChar = in.readUnsignedByte();
 		int lastChar = in.readUnsignedByte();
-		in.readByte(); // int defaultChar = in.readUnsignedByte();
+		int defaultChar = in.readUnsignedByte();
 		in.readByte(); // int breakChar = in.readUnsignedByte();
 		in.readShort(); // int widthBytes = Short.reverseBytes(in.readShort()) & 0xFFFF;
 		in.readInt(); // int device = Integer.reverseBytes(in.readInt());
@@ -163,6 +163,12 @@ public class FNTBitmapFontImporter implements BitmapFontImporter {
 			int ch = (encoding != null) ? encoding.get(firstChar + i) : fromCP1252(firstChar + i);
 			if (ch < 0) ch = 0xF000 + firstChar + i;
 			f.putCharacter(ch, g);
+			// The default character is also the glyph of characters that the font lacks.
+			if (i == defaultChar) {
+				byte[][] copy = new byte[bitmap.length][];
+				for (int by = 0; by < bitmap.length; by++) copy[by] = bitmap[by].clone();
+				f.putNamedGlyph(".notdef", new BitmapFontGlyph(copy, 0, geWidth[i], ascent));
+			}
 		}
 		
 		f.setXHeight();
