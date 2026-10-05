@@ -40,6 +40,7 @@ public class BitmapExportPanel extends JPanel implements BitmapExportOptions {
 	private final BitmapExportColorPanel colorPanel;
 	private final BitmapExportPSFPanel psfPanel;
 	private final BitmapExportPlaydatePanel playdatePanel;
+	private final BitmapExportFNTPanel fntPanel;
 	private final JButton exportButton;
 	
 	public BitmapExportPanel(BitmapFont font) {
@@ -56,6 +57,7 @@ public class BitmapExportPanel extends JPanel implements BitmapExportOptions {
 		this.colorPanel = new BitmapExportColorPanel();
 		this.psfPanel = new BitmapExportPSFPanel();
 		this.playdatePanel = new BitmapExportPlaydatePanel();
+		this.fntPanel = new BitmapExportFNTPanel();
 		this.exportButton = new JButton("Export");
 		
 		JPanel nonePanel = new BitmapExportLabelPanel("This format has no options.");
@@ -78,6 +80,7 @@ public class BitmapExportPanel extends JPanel implements BitmapExportOptions {
 		formatOptionsPanel.add(colorPanel, "color");
 		formatOptionsPanel.add(psfPanel, "psf");
 		formatOptionsPanel.add(playdatePanel, "playdate");
+		formatOptionsPanel.add(fntPanel, "fnt");
 		formatOptionsPanel.add(v1Panel, "v1");
 		formatOptionsPanel.add(nonePanel, "none");
 		
@@ -107,6 +110,7 @@ public class BitmapExportPanel extends JPanel implements BitmapExportOptions {
 				amigaPanel.setSelectedEncoding(enc);
 				encodingPanel.setSelectedEncoding(enc);
 				u8mPanel.setSelectedEncoding(enc);
+				fntPanel.setSelectedEncoding(enc);
 				Window c = getMyContainingWindow();
 				if (c != null) c.pack();
 			}
@@ -182,6 +186,7 @@ public class BitmapExportPanel extends JPanel implements BitmapExportOptions {
 		if (f.cardName.equals("amiga")) return amigaPanel.getSelectedEncoding();
 		if (f.cardName.equals("u8m")) return u8mPanel.getSelectedEncoding();
 		if (f.cardName.equals("fontx")) return fontxPanel.getSelectedSingleByteEncoding();
+		if (f.cardName.equals("fnt")) return fntPanel.getSelectedEncoding();
 		return encodingPanel.getSelectedEncoding();
 	}
 	
@@ -267,5 +272,10 @@ public class BitmapExportPanel extends JPanel implements BitmapExportOptions {
 	@Override
 	public boolean getPlaydateSeparate() {
 		return playdatePanel.getSeparate();
+	}
+	
+	@Override
+	public int getFNTAverageWidth() {
+		return fntPanel.getAverageWidth();
 	}
 }
