@@ -32,6 +32,7 @@ The input format is determined by the file extension of the input file. Supporte
   *  `.u8m` - [U8/M (UTF-8 for Microcomputers)](https://github.com/kreativekorp/u8m)
   *  `.font` - Amiga bitmap font (black and white only; color not supported)
   *  `.fnt` - Windows `.fnt` format (not the same as `.fon`; vector fonts not supported)
+  *  `.fon` - Windows `.fon` format (every `.fnt` font of the file; vector fonts not supported)
   *  `.fnt`, `.ftx` - [IBM DOS/V FONTX2 format](http://elm-chan.org/docs/dosv/fontx_e.html)
   *  `.fnt`, `.mgf`, `.mpf` - MousePaint/MouseGraphics ToolKit font
   *  `.fnt`, `.rbf`, `.rb11`, `.rb12` - [Rockbox Font Format](https://www.rockbox.org/wiki/FontFormat)
@@ -78,6 +79,7 @@ The input format is determined by the file extension of the input file. Supporte
   *  `.u8m` - [U8/M (UTF-8 for Microcomputers)](https://github.com/kreativekorp/u8m)
   *  `.font` - Amiga bitmap font (black and white only; color not supported)
   *  `.fnt` - Windows `.fnt` format (not the same as `.fon`; vector fonts not supported)
+  *  `.fon` - Windows `.fon` format (every `.fnt` font of the file; vector fonts not supported)
   *  `.fnt`, `.ftx` - [IBM DOS/V FONTX2 format](http://elm-chan.org/docs/dosv/fontx_e.html)
   *  `.fnt`, `.mgf`, `.mpf` - MousePaint/MouseGraphics ToolKit font
   *  `.fnt`, `.rbf`, `.rb11`, `.rb12` - [Rockbox Font Format](https://www.rockbox.org/wiki/FontFormat)
