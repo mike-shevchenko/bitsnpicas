@@ -238,7 +238,7 @@ public class FNTBitmapFontExporter implements BitmapFontExporter {
 		out.writeByte(charSet);
 		out.writeShort(Short.reverseBytes((short)(isMono ? avgWidth : 0))); // pixWidth
 		out.writeShort(Short.reverseBytes((short)height)); // pixHeight
-		out.writeByte(isMono ? 0 : 1); // pitchAndFamily
+		out.writeByte(isMono ? 0x30 : 0x01); // pitchAndFamily (fixed pitch goes with FF_MODERN)
 		out.writeShort(Short.reverseBytes((short)avgWidth));
 		out.writeShort(Short.reverseBytes((short)maxWidth));
 		out.writeByte(firstChar);
