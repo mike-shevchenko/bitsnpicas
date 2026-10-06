@@ -14,6 +14,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 import com.kreative.bitsnpicas.Font;
 import com.kreative.bitsnpicas.FontImporter;
 import com.kreative.bitsnpicas.edit.BitmapListFrame;
@@ -61,6 +62,7 @@ public class EncodingSelectionPanel extends JPanel {
 					Font<?>[] fonts = fi.importFont(file);
 					if (fonts != null && fonts.length > 0) {
 						JFrame frame = Main.openFonts(file, null, fonts);
+						if (frame != null) SwingUtilities.getWindowAncestor(EncodingSelectionPanel.this).dispose();
 						if (frame instanceof GlyphListFrame) {
 							((GlyphListFrame<?>)frame).getPanel().getModelList().setSelectedModelName(enc.getName(), true);
 						} else if (frame instanceof BitmapListFrame) {
@@ -79,7 +81,7 @@ public class EncodingSelectionPanel extends JPanel {
 					}
 				} catch (IOException ioe) {
 					JOptionPane.showMessageDialog(
-						null, "An error occurred while reading the selected file.",
+						null, "An error occurred while reading the selected file.\n" + ioe,
 						"Open", JOptionPane.ERROR_MESSAGE
 					);
 				}
