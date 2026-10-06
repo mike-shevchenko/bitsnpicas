@@ -95,6 +95,21 @@ public enum ImportFormat {
 			return new SRFontBitmapFontImporter();
 		}
 	},
+	PXFONT("PNG (pxfont font sheet)") {
+		public boolean recognize(FileProxy fp) {
+			return (
+				fp.hasExtension(".png") && fp.isImage() &&
+				PxfontBitmapFontImporter.canImportFont(fp.getImage(), fp.getFile().getName())
+			);
+		}
+		public JFrame createOptionFrame(File file) throws IOException {
+			return new EncodingSelectionFrame("CP1252", file, new EncodingSelectionImporter() {
+				public FontImporter<?> createImporter(GlyphList encoding) {
+					return new PxfontBitmapFontImporter(encoding);
+				}
+			});
+		}
+	},
 	HEX("Hex (GNU Unifont)") {
 		public boolean recognize(FileProxy fp) { return fp.hasExtension(".hex"); }
 		public FontImporter<?> createImporter() { return new HexBitmapFontImporter(); }

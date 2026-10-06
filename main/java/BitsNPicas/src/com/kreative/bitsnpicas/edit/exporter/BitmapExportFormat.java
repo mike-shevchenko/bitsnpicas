@@ -87,6 +87,11 @@ public enum BitmapExportFormat {
 			return new RFontBitmapFontExporter(o.getSelectedColor());
 		}
 	},
+	PXFONT("PNG (pxfont font sheet)", ".png", "encoding", "CP1252") {
+		public BitmapFontExporter createExporter(BitmapExportOptions o) {
+			return new PxfontBitmapFontExporter(o.getSelectedEncoding());
+		}
+	},
 	HEX("Hex (GNU Unifont)", ".hex", "none") {
 		public BitmapFontExporter createExporter(BitmapExportOptions o) {
 			return new HexBitmapFontExporter();
