@@ -30,7 +30,7 @@ import com.kreative.unicode.data.GlyphList;
 // "zx 6x8px.png"; its first cell is blank and tells the paper, and its rows
 // start at the space. The sheet of a TrueType font may go on with rows of
 // glyphs that have no code in the encoding; those are left out.
-public class PxfontBitmapFontImporter implements BitmapFontImporter {
+public class PxfontBitmapFontImporter implements BitmapFontImporter, ImportWarnings {
 	private static final int COLUMNS = 32;
 	private static final int MAX_ROWS = 8;
 	private static final int DEFAULT_CHAR = 0x7F;
@@ -53,6 +53,7 @@ public class PxfontBitmapFontImporter implements BitmapFontImporter {
 	private static final int MIXED = 4;
 	
 	private GlyphList encoding;
+	private final List<String> warnings = new ArrayList<String>();
 	
 	public PxfontBitmapFontImporter() {
 		this.encoding = null;
@@ -89,7 +90,13 @@ public class PxfontBitmapFontImporter implements BitmapFontImporter {
 		return sheet.fullColoring() || sheet.plainHeight() > 0;
 	}
 	
+	@Override
+	public List<String> getImportWarnings() {
+		return warnings;
+	}
+	
 	public BitmapFont importFont(BufferedImage image, String fileName) throws IOException {
+		warnings.clear();
 		Sheet sheet = new Sheet(image, fileName);
 		if (sheet.fullColoring()) sheet.readCells();
 		else sheet.readGrid();
@@ -132,7 +139,13 @@ public class PxfontBitmapFontImporter implements BitmapFontImporter {
 			int idx = e.getKey();
 			byte[][] glyph = e.getValue();
 			int ch = (encoding != null) ? encoding.get(idx) : idx;
-			if (ch < 0) ch = 0xF000 + idx;
+			if (ch < 0) {
+				ch = 0xF000 + idx;
+				warnings.add(String.format(
+					"The place 0x%02X has a glyph but no character in %s; the glyph is U+%04X now.",
+					idx, encoding.getName(), ch
+				));
+			}
 			f.putCharacter(ch, new BitmapFontGlyph(glyph, 0, glyph[0].length, ascent));
 			// The default character is also the glyph of characters that the font lacks.
 			if (idx == sheet.defaultChar) {
@@ -146,6 +159,12 @@ public class PxfontBitmapFontImporter implements BitmapFontImporter {
 		}
 		if (sheet.gap > 0 && fixedWidth == 0) {
 			f.setProperty(FNTBitmapFontImporter.PROP_AVG_WIDTH, Integer.toString(sheet.gap));
+		}
+		if (sheet.skipped > 0) {
+			warnings.add(
+				sheet.skipped + " glyph(s) in the rows after code 255 are left out: the sheet does not tell" +
+				" which characters they are."
+			);
 		}
 		if (sheet.name != null) {
 			Matcher m = NAME_STYLE.matcher(sheet.name);
@@ -175,6 +194,7 @@ public class PxfontBitmapFontImporter implements BitmapFontImporter {
 		private int height;
 		private int gap;
 		private int defaultChar = -1;
+		private int skipped = 0;
 		// The glyph of each code, as rows of pixels.
 		private final SortedMap<Integer,byte[][]> glyphs = new TreeMap<Integer,byte[][]>();
 		
@@ -388,7 +408,7 @@ public class PxfontBitmapFontImporter implements BitmapFontImporter {
 			places(cells, bares, gap, slots);
 			for (int[] s : slots) {
 				int r = s[0], slot = s[1], start = s[2], end = s[3], ink = INK[s[4]];
-				if (firstRow + r >= MAX_ROWS) continue;
+				if (firstRow + r >= MAX_ROWS) { skipped++; continue; }
 				byte[][] glyph = new byte[height][end - start];
 				for (int y = 0; y < height; y++) {
 					for (int x = start; x < end && x < w; x++) {
