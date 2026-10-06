@@ -165,6 +165,24 @@ public enum ImportFormat {
 			});
 		}
 	},
+	FON("FON (Windows 3.x)") {
+		public boolean recognize(FileProxy fp) {
+			return fp.hasExtension(".fon") && fp.startsWith('M', 'Z');
+		}
+		public JFrame createOptionFrame(File file) throws IOException {
+			String encodingName = FONBitmapFontImporter.getEncodingName(file);
+			if (encodingName == null || !EncodingList.instance().containsGlyphList(encodingName)) encodingName = "CP1252";
+			return new EncodingSelectionFrame(encodingName, file, new EncodingSelectionImporter() {
+				public FontImporter<?> createImporter(GlyphList encoding) {
+					return new FONBitmapFontImporter(encoding);
+				}
+			}, (
+				"<html>The fonts of a FON file are opened as copies: saving them does not change the file.<br>" +
+				"To change the file, split it into FNT files, change those and merge them again,<br>" +
+				"with the Windows FON items of the File menu.</html>"
+			));
+		}
+	},
 	FONTX("FONTX (DOS/V)") {
 		public boolean recognize(FileProxy fp) {
 			return fp.hasExtension(".ftx", ".fnt") && fp.startsWith('F');
