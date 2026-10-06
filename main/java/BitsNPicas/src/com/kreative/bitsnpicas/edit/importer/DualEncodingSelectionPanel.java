@@ -78,7 +78,7 @@ public class DualEncodingSelectionPanel extends JPanel {
 					}
 				} catch (IOException ioe) {
 					JOptionPane.showMessageDialog(
-						null, "An error occurred while reading the selected file.",
+						null, "An error occurred while reading the selected file.\n" + ioe,
 						"Open", JOptionPane.ERROR_MESSAGE
 					);
 				}
