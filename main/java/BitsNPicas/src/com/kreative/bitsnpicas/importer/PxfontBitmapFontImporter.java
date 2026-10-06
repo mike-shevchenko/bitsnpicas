@@ -28,7 +28,8 @@ import com.kreative.unicode.data.GlyphList;
 // are, and the default character, at 0x7F, may have no paper. A sheet in other
 // colors has cells of one size, which the name of its file tells, as in
 // "zx 6x8px.png"; its first cell is blank and tells the paper, and its rows
-// start at the space.
+// start at the space. The sheet of a TrueType font may go on with rows of
+// glyphs that have no code in the encoding; those are left out.
 public class PxfontBitmapFontImporter implements BitmapFontImporter {
 	private static final int COLUMNS = 32;
 	private static final int MAX_ROWS = 8;
@@ -379,13 +380,15 @@ public class PxfontBitmapFontImporter implements BitmapFontImporter {
 			}
 			
 			// The row of the cell without paper is that of 0x7F; or else eight rows
-			// start at code 0, and fewer at the space.
-			int firstRow = (bareRow >= 0) ? (DEFAULT_CHAR / COLUMNS - bareRow) : (rows == MAX_ROWS) ? 0 : 1;
-			if (firstRow < 0 || firstRow + rows > MAX_ROWS) throw new IOException("the sheet has too many rows");
+			// start at code 0, and fewer at the space. The sheet of a TrueType font
+			// goes on with rows of glyphs that have no code here, which are left out.
+			int firstRow = (bareRow >= 0) ? (DEFAULT_CHAR / COLUMNS - bareRow) : (rows >= MAX_ROWS) ? 0 : 1;
+			if (firstRow < 0) throw new IOException("the sheet has too many rows above the cell without paper");
 			List<int[]> slots = new ArrayList<int[]>();
 			places(cells, bares, gap, slots);
 			for (int[] s : slots) {
 				int r = s[0], slot = s[1], start = s[2], end = s[3], ink = INK[s[4]];
+				if (firstRow + r >= MAX_ROWS) continue;
 				byte[][] glyph = new byte[height][end - start];
 				for (int y = 0; y < height; y++) {
 					for (int x = start; x < end && x < w; x++) {
