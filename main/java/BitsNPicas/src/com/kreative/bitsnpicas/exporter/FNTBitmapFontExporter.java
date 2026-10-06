@@ -17,6 +17,7 @@ public class FNTBitmapFontExporter implements BitmapFontExporter {
 	
 	private int magic;
 	private GlyphList encoding;
+	private int averageWidth;
 	
 	public FNTBitmapFontExporter() {
 		this.magic = 3;
@@ -38,6 +39,11 @@ public class FNTBitmapFontExporter implements BitmapFontExporter {
 		if (magic < 1 || magic > 3) throw new IllegalArgumentException("bad magic number");
 		this.magic = magic;
 		this.encoding = encoding;
+	}
+	
+	public FNTBitmapFontExporter(int magic, GlyphList encoding, int averageWidth) {
+		this(magic, encoding);
+		this.averageWidth = averageWidth;
 	}
 	
 	@Override
@@ -139,6 +145,7 @@ public class FNTBitmapFontExporter implements BitmapFontExporter {
 			avgWidth += width;
 			numChars++;
 			if (ch == 32) breakChar = idx;
+			if (idx == 0x7F) defaultChar = idx; // by convention of Windows fonts
 			if (firstChar < 0) firstChar = idx;
 			lastChar = idx;
 			int rowBytes = (width + 7) / 8;
@@ -237,8 +244,8 @@ public class FNTBitmapFontExporter implements BitmapFontExporter {
 		out.writeByte(charSet);
 		out.writeShort(Short.reverseBytes((short)(isMono ? avgWidth : 0))); // pixWidth
 		out.writeShort(Short.reverseBytes((short)height)); // pixHeight
-		out.writeByte(isMono ? 0 : 1); // pitchAndFamily
-		out.writeShort(Short.reverseBytes((short)avgWidth));
+		out.writeByte(isMono ? 0x30 : 0x01); // pitchAndFamily (fixed pitch goes with FF_MODERN)
+		out.writeShort(Short.reverseBytes((short)((averageWidth > 0) ? averageWidth : avgWidth)));
 		out.writeShort(Short.reverseBytes((short)maxWidth));
 		out.writeByte(firstChar);
 		out.writeByte(lastChar);
