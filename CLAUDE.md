@@ -19,7 +19,7 @@ When the upstream accepts a pull request: update `master`; rebase each branch th
 
 ## State, 2026-10-06
 
-Six branches hold work meant for separate pull requests, written in the style of the upstream history (a short capitalized title, no prefix). The first three are stacked, each on top of the one before, as each touches lines of the one before, the next two are each on top of `font-properties`, and the last one is on `master` by itself; so the pull requests go in this order, or the later ones are rebased when an earlier one is refused.
+Seven branches hold work meant for separate pull requests, written in the style of the upstream history (a short capitalized title, no prefix). The first three are stacked, each on top of the one before, as each touches lines of the one before, the next two are each on top of `font-properties`, and the last two are on `master` by themselves; so the pull requests go in this order, or the later ones are rebased when an earlier one is refused.
 
 `fnt-fixes`, from `master` at `43b11dc`: the plain bug fixes.
 
@@ -59,9 +59,14 @@ Six branches hold work meant for separate pull requests, written in the style of
 
 1. "Add option to use line height as em size of TTF fonts". The em of an exported TrueType font is the em of the bitmap font; with the option it is the line height, as `pxfont ttf` has it, so that a font with a cell of 8 pixels is exact at 8, 16, 24 pixels and not at 7, 14, 21 (the em of a font imported from FNT is the cell less the internal leading). `-l` of convertbitmap (`-L` is the default), a check box in the TTF panel of the export window, the fourth argument of the constructor of `TTFBitmapFontExporter`. The OTB exporter is as it was.
 
-`mine` is `master` with a merge of each of these six, in the order above, and of `private` last: so the first parent of the tip of `mine` has every change and nothing of `private`, and that is the commit to tag for a release.
+`import-fixes`, from `master`, independent of the others:
 
-Every commit of the six branches compiles by itself at the Java level of the Makefile (checked on 2026-10-06, 20 commits), and none has a file outside `src/` and `README.md`.
+1. "Close import dialog once its font is open". The five windows that ask how to import a file (`edit/importer/*Panel.java`: encoding, dual encoding, PSF, image grid, binary) stayed open after the font window appeared; each now disposes its window when `Main.openFonts()` or `Main.openFont()` returns a frame. An old bug of the upstream.
+2. "Tell that Import Image needs glyphs selected". The Import Image item of the glyph list only beeped without a selection; it shows a message now. The other items that beep without a selection are left as they are.
+
+`mine` is `master` with a merge of each of these seven, in the order above, and of `private` last: so the first parent of the tip of `mine` has every change and nothing of `private`, and that is the commit to tag for a release.
+
+Every commit of the six branches compiles by itself at the Java level of the Makefile (checked on 2026-10-06, 20 commits; the two of `import-fixes` compiled only as single files), and none has a file outside `src/` and `README.md`.
 
 Jars in the fork's root, ignored by git on `private` and `mine`: `BitsNPicas-mine.jar` is a build of `mine`; the other `BitsNPicas-*.jar` are earlier builds, and `BitsNPicas.jar` an old one of 2023-02-02.
 
